@@ -45,10 +45,14 @@ def load_json_list (u):
             _select = None
     return _select
 
-# Partial Selected Construction
+# Selected Locale(s) Construction
 #locale_select = ['en'] # English is selected. Can be extended in the future  'zh-Hant-HK', 'zh-Hant-MO', 'zh-Hans', 'zh-Hans-SG'
+#locale_select = ['zh-Hant'] # debug
 #print (load_json_list (URL_CLDR_JSON_LOCALES_AVA))
 locale_select = load_json_list (URL_CLDR_JSON_LOCALES_AVA)
+# Note. More see Unicode specification (http://unicode.org/repos/cldr/trunk/common/collation/) and ICU Collation Demo http://demo.icu-project.org/icu-bin/collation.html
+
+
 
 
 ## Retrive data directly from unicode-cldr project hosted at github
@@ -90,7 +94,11 @@ for key, value in locale_json.items():
    
     ### Sort by IBM's ICU library, which uses the full Unicode Collation Algorithm
     print (key)
+
     collator = icu.Collator.createInstance(icu.Locale('{lc}.UTF-8'.format(lc=key)))
+    ### Make an exception for zh-Hant  --> zh-Hant-TW
+    if key=="zh-Hant":
+        collator = icu.Collator.createInstance(icu.Locale('{lc}.UTF-8'.format(lc="zh-Hant-TW")))
 
     #### Sort based on keys/codes
     #c_n_keys_sorted = sorted(list(c_n.keys()), key=collator.getSortKey)
